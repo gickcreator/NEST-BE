@@ -53,7 +53,7 @@
 
 ## 💻 System Architecture
 
-https://github.com/TEAM-DAWM/NUTSHELL-SERVER/assets/128598386/84323db3-52f2-474f-bf5b-b3f3d6346c6e
+<img width="853" alt="image" src="https://github.com/user-attachments/assets/472ed304-10a5-43dc-bfce-afa705fcd875">
 
 ## 🌱 ERD
 
