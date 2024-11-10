@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum BusinessErrorCode implements DefaultErrorCode{
-    BUSINESS_TEST(HttpStatus.OK,"conflict","선착순 마감됐어요"),
+    WRONG_ENTRY_POINT(HttpStatus.BAD_REQUEST, "error", "잘못된 요청입니다."),
     ;
     @JsonIgnore
     private final HttpStatus httpStatus;

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import ssu.opensource.exception.BusinessException;
 import ssu.opensource.exception.ForbiddenException;
 import ssu.opensource.exception.NotFoundException;
+import ssu.opensource.exception.UnAuthorizedException;
 import ssu.opensource.exception.code.*;
 
 @Slf4j
@@ -65,6 +66,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ForbiddenErrorCode> handleException(ForbiddenException e) {
         log.error("handleException() in GlobalExceptionHandler throw ForbiddenException : {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getErrorCode().getHttpStatus())
+                .body(e.getErrorCode());
+    }
+
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<UnAuthorizedErrorCode> handleException(UnAuthorizedException e) {
+        log.error("handleException() in GlobalExceptionHandler throw UnAuthorizedException : {}", e.getMessage());
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
                 .body(e.getErrorCode());
