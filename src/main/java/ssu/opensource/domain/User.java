@@ -24,7 +24,7 @@ public class User {
     @Column(name="email", nullable = false)
     private String email;
 
-    @Column(name="serial_id", nullable = false)
+    @Column(name="serial_id", nullable = false, unique = true)
     private String serialId;
 
     @Column(name="google_token")
@@ -40,10 +40,10 @@ public class User {
     private List<Task> tasks;
 
     @Builder
-    public User(String name, String email, String serialId) {
+    public User(String serialId, String name, String email) {
+        this.serialId = serialId;
         this.name = name;
         this.email = email;
-        this.serialId = serialId;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
