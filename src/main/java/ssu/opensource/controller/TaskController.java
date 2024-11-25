@@ -2,10 +2,7 @@ package ssu.opensource.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ssu.opensource.annotation.UserId;
 import ssu.opensource.dto.task.TaskCreateDto;
 import ssu.opensource.service.task.TaskService;
@@ -26,6 +23,16 @@ public class TaskController {
             @RequestBody final TaskCreateDto taskCreateDto
     ){
         return ResponseEntity.created(URI.create(taskService.createTask(userId, taskCreateDto).getId().toString())).build();
+    }
+
+    //Task 삭제 API
+    @DeleteMapping("/tasks/{taskId}")
+    public ResponseEntity<Void> deleteTask(
+            @UserId final Long userId,
+            @PathVariable(name="taskId") final Long taskId
+    ){
+        taskService.removeTask(userId, taskId);
+        return ResponseEntity.noContent().build();
     }
 
 

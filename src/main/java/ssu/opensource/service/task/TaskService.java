@@ -46,4 +46,10 @@ public class TaskService {
         return taskSaver.save(task);
     }
 
+    public void removeTask(final Long userId, final Long taskId){
+        User user= userRetriever.findByUserId(userId);
+        Task task = taskRetriever.findByUserAndId(user, taskId);
+        taskRemover.deleteTask(task);
+    }
+
 }
