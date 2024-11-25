@@ -1,4 +1,4 @@
-package ssu.opensource.dto.task;
+package ssu.opensource.dto.task.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
