@@ -9,6 +9,7 @@ import ssu.opensource.dto.type.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -28,8 +29,12 @@ public class Task {
     @Column(name = "priority")
     private String priority;
 
-    @Column(name = "dead_line")
-    private LocalDateTime deadLine;
+    // deadLine 을 date와 time 두개로 쪼갬
+    @Column(name = "dead_line_date")
+    private LocalDate deadLineDate;
+
+    @Column(name = "dead_line_time")
+    private LocalTime deadLineTime;
 
     @Column(name = "assigned_date")
     private LocalDate assignedDate;
@@ -40,47 +45,57 @@ public class Task {
     @Column(name = "repetition")
     private String repetition;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
-    @ManyToOne(targetEntity= User.class, fetch=FetchType.LAZY)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy="task", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    private List<TimeBlock> timeBlocks;
-
-    @OneToMany(mappedBy="task", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<TaskStatus> taskStatuses;
 
-
     @Builder
-    public Task(User user, String name, String description, LocalDateTime deadLine) {
+    public Task(User user, String name, String description, LocalDate deadLineDate, LocalTime deadLineTime) {
         this.user = user;
         this.name = name;
         this.description = description;
-        this.deadLine = deadLine;
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+        this.deadLineDate = deadLineDate;
+        this.deadLineTime = deadLineTime;
+        this.status = Status.TODO;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    @Builder
-    public void updateTask(String name, String description, LocalDateTime deadLine) {
-        if (name != null)
+
+    public void updateTask(String name, String description, LocalDate deadLineDate, LocalTime deadLineTime) {
+        if (name != null && !name.equals(""))
             this.name = name;
-        if (description != null)
+        if (description != null && !description.equals(""))
             this.description = description;
-        if (deadLine != null)
-            this.deadLine = deadLine;
-        this.updatedAt = LocalDate.now();
+        if(deadLineDate != null)
+            this.deadLineDate = deadLineDate;
+        if(deadLineTime != null)
+            this.deadLineTime = deadLineTime;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void updateAssignedDate(LocalDate assignedDate) {
         this.assignedDate = assignedDate;
-        this.updatedAt = LocalDate.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
     }
 }
+
 
