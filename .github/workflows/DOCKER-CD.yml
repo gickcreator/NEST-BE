@@ -47,8 +47,8 @@ jobs:
 
       - name: docker image 빌드 및 푸시
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.SHELLIN_DOCKER_LOGIN_USERNAME }}/nest .
-          docker push ${{ secrets.SHELLIN_DOCKER_LOGIN_USERNAME }}/nest
+          docker build --platform linux/amd64 -t ${{ secrets.NEST_DOCKER_LOGIN_USERNAME }}/nest .
+          docker push ${{ secrets.NEST_DOCKER_LOGIN_USERNAME }}/nest
         working-directory: ${{ env.working-directory }}
 
   cd:
