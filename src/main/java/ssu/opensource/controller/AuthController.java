@@ -17,26 +17,26 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/login/google")
-    public ResponseEntity<Void> googleLogin(
+    @PostMapping("/auth/login/google")
+    public ResponseEntity<JwtTokensDto> googleLogin(
             @RequestParam final String code
-    ) throws IOException {
-        authService.googleLogin(code);
-        return ResponseEntity.ok().build();
+    ) {
+        return ResponseEntity.ok(authService.googleLogin(code));
     }
 
     @PostMapping("/auth/re-issue")
     public ResponseEntity<JwtTokensDto> reissueToken(
-            @RequestHeader("Authorization") final String refreshToken
+            @UserId Long userId
     ){
-        return ResponseEntity.ok(authService.reissueToken(refreshToken));
+        return ResponseEntity.ok(authService.reissueToken(userId));
     }
 
     @DeleteMapping("/auth/logout")
-    public ResponseEntity<?> logout(
-            @UserId final Long userId
+    public ResponseEntity<Void> logout(
+            @UserId final Long userId,
+            @RequestHeader("Authorization") final String refreshToken
     ){
-        authService.logout(userId);
+        authService.logout(userId,refreshToken);
         return ResponseEntity.noContent().build();
     }
 }
