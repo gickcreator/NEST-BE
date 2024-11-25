@@ -14,12 +14,12 @@ import org.springframework.data.redis.core.index.Indexed;
 public class Token {
 
     @Id
-    private Long id;
+    private String id;
     @Indexed
     private String refreshToken;
 
     @Builder
-    public Token(Long id, String refreshToken) {
+    public Token(String id, String refreshToken) {
         this.id = id;
         this.refreshToken = refreshToken;
     }
