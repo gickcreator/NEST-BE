@@ -1,5 +1,9 @@
 package ssu.opensource.feign.google;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleUserInfoResponse(
         String sub,
         String name,
@@ -11,8 +15,4 @@ public record GoogleUserInfoResponse(
         String local
 
 ) {
-    public static GoogleUserInfoResponse of(String sub, String name, String givenName, String familyName, String picture,
-                                            String email, String emailVerified, String local) {
-        return new GoogleUserInfoResponse(sub, name, givenName, familyName, picture, email, emailVerified, local);
-    }
 }
