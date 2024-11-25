@@ -18,8 +18,14 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", nullable = false)
-    private String name;
+    @Column(name="given_name")
+    private String givenName;
+
+    @Column(name="family_name")
+    private String familyName;
+
+    @Column(name="image", nullable = false)
+    private String image;
 
     @Column(name="email", nullable = false, unique = true)
     private String email;
@@ -33,18 +39,27 @@ public class User {
     @Column(name="updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy="user", fetch= FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
     private List<Task> tasks;
 
-    @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    private List<GoogleCalender> googleCalenders;
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
+    private List<GoogleCalendar> googleCalendars;
 
     @Builder
-    public User(String serialId, String name, String email) {
-        this.serialId = serialId;
-        this.name = name;
+    public User(String givenName, String familyName, String image, String email, String serialId) {
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.image = image;
         this.email = email;
+        this.serialId = serialId;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void updateName(String givenName, String familyName) {
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
+

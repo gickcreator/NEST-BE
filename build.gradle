@@ -44,14 +44,6 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	// redis 설치 후 주석 해제하기
-	// implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-
-	// Validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -59,6 +51,17 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+	//google calender
+	implementation 'com.google.api-client:google-api-client:2.0.0'
+	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
+	implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
 
 	// OpenFeign
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
