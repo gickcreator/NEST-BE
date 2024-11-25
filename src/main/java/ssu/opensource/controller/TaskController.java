@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.opensource.annotation.UserId;
-import ssu.opensource.dto.task.TaskCreateDto;
+import ssu.opensource.dto.task.request.TaskCreateDto;
+import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.service.task.TaskService;
 
 import java.net.URI;
@@ -32,6 +33,17 @@ public class TaskController {
             @PathVariable(name="taskId") final Long taskId
     ){
         taskService.removeTask(userId, taskId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // task 상태 수정 PATCH API
+    @PatchMapping("/tasks/{taskId}/status")
+    public ResponseEntity<Void> updateStatus(
+            @UserId final Long userId,
+            @PathVariable final Long taskId,
+            @RequestBody final TaskStatusDto taskStatusDto
+    ) {
+        taskService.updateStatus(userId, taskId, taskStatusDto);
         return ResponseEntity.noContent().build();
     }
 
