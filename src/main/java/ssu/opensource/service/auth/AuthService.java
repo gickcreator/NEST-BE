@@ -54,9 +54,9 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(final Long userId, final String refreshToken){
-        Token token = tokenRetriever.findById(userId, refreshToken);
-        tokenRemover.deleteToken(token);
+    public void logout(final Long userId){
+        Token refreshToken = tokenRetriever.findById(userId);
+        tokenRemover.deleteToken(refreshToken);
     }
 
     @Transactional

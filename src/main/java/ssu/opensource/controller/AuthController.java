@@ -33,10 +33,9 @@ public class AuthController {
 
     @DeleteMapping("/auth/logout")
     public ResponseEntity<Void> logout(
-            @UserId final Long userId,
-            @RequestHeader("Authorization") final String refreshToken
+            @UserId final Long userId
     ){
-        authService.logout(userId,refreshToken);
+        authService.logout(userId);
         return ResponseEntity.noContent().build();
     }
 }
