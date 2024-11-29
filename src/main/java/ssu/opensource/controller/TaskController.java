@@ -8,6 +8,7 @@ import ssu.opensource.annotation.UserId;
 import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
+import ssu.opensource.dto.task.request.TaskUpdateDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.service.task.TaskService;
@@ -70,6 +71,17 @@ public class TaskController {
             @RequestParam String type
     ){
         return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
+    }
+
+    // Task 설명 수정 PATCH API
+    @PatchMapping("/tasks/{taskId}")
+    public ResponseEntity<Void> updateTask(
+            @UserId final Long userId,
+            @PathVariable final Long taskId,
+            @RequestBody(required = false) final TaskUpdateDto taskUpdateDto
+    ){
+        taskService.updateTask(userId, taskId, taskUpdateDto);
+        return ResponseEntity.noContent().build();
     }
 
 
