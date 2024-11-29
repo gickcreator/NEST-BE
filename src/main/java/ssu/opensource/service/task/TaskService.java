@@ -11,6 +11,7 @@ import ssu.opensource.domain.User;
 import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
+import ssu.opensource.dto.task.request.TaskUpdateDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.dto.type.Status;
@@ -232,5 +233,14 @@ public class TaskService {
                                 .build()
                         ).toList()
                 ).build();
+    }
+
+
+    // Task 설명 수정 PATCH API
+    @Transactional
+    public void updateTask(final Long userId, final Long taskId, TaskUpdateDto taskUpdateDto) {
+        User user = userRetriever.findByUserId(userId);
+        Task task = taskRetriever.findByUserAndId(user, taskId);
+        taskUpdater.editDetails(task, taskUpdateDto);
     }
 }
