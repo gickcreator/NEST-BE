@@ -91,6 +91,15 @@ public class GlobalExceptionHandler {
                 .body(IllegalArgumentErrorCode.INVALID_DATE_FORMAT);
     }
 
+    //FeignClient 오류
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<BusinessErrorCode> handleException(FeignException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(BusinessErrorCode.GOOGLE_SERVER_ERROR.getHttpStatus())
+                .body(BusinessErrorCode.GOOGLE_SERVER_ERROR);
+    }
+
     //잘못된 인자 오류
     @ExceptionHandler(ssu.opensource.exception.IllegalArgumentException.class)
     public ResponseEntity<IllegalArgumentErrorCode> handleException(IllegalArgumentException e) {

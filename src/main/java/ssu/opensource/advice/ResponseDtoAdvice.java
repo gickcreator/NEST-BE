@@ -11,7 +11,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import ssu.opensource.dto.common.ResponseDto;
 import ssu.opensource.exception.code.DefaultErrorCode;
 
-@RestControllerAdvice
+@RestControllerAdvice(
+        basePackages = "ssu.opensource"
+)
 public class ResponseDtoAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, @NonNull Class converterType) {
