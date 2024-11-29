@@ -1,14 +1,18 @@
 package ssu.opensource.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.opensource.annotation.UserId;
+import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
+import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.service.task.TaskService;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,5 +51,14 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-
+    // Task 상세조회 GET API
+    @GetMapping("/tasks/{taskId}")
+    public ResponseEntity<TaskDetailDto> getTask(
+            @UserId final Long userId,
+            @PathVariable final Long taskId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate targetDate
+    ){
+        TargetDateDto targetDateDto = (targetDate != null) ? new TargetDateDto(targetDate) : null;
+        return ResponseEntity.ok(taskService.getTaskDetails(userId, taskId, targetDateDto));
+    }
 }
