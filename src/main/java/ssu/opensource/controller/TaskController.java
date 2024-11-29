@@ -10,6 +10,7 @@ import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.request.TaskUpdateDto;
+import ssu.opensource.dto.task.response.TaskDashboardDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.dto.task.response.TasksDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
@@ -96,6 +97,4 @@ public class TaskController {
     ){
         return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
     }
-
-
 }

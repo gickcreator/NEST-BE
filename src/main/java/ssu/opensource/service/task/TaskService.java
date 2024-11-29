@@ -12,6 +12,7 @@ import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.request.TaskUpdateDto;
+import ssu.opensource.dto.task.response.TaskDashboardDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.dto.task.response.TasksDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
@@ -30,6 +31,7 @@ import ssu.opensource.service.user.UserRetriever;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -292,5 +294,44 @@ public class TaskService {
         User user = userRetriever.findByUserId(userId);
         Task task = taskRetriever.findByUserAndId(user, taskId);
         taskUpdater.editDetails(task, taskUpdateDto);
+    }
+
+    public TaskDashboardDto getDashboard(
+            final Long userId,
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final Boolean isMonth
+    ) {
+        User user = userRetriever.findByUserId(userId);
+        if (isMonth != null) { // 지난 1달
+            LocalDate now = LocalDate.now();
+            LocalDate past = isMonth ? now.minusDays(29) : now.minusDays(6);
+            return calcDashBoard(user, past, now);
+
+        } else if (startDate != null && endDate != null) {
+            return calcDashBoard(user, startDate, endDate);
+
+        } else {
+            throw new IllegalArgumentException(IllegalArgumentErrorCode.INVALID_ARGUMENTS);
+        }
+    }
+
+    // 대시보드
+    private TaskDashboardDto calcDashBoard(final User user, final LocalDate past, final LocalDate now){
+        int completeTasks = taskStatusRetriever.countAllTasksInPeriod(user, past, now, Status.DONE);
+        int avgInprogressTasks = taskStatusRetriever.countAllTasksInPeriod(user, past, now, Status.IN_PROGRESS);
+        int avgDeferredTasks = taskStatusRetriever.countAllTasksInPeriod(user, past, now, Status.DEFERRED);
+        int assignedTasks = taskRetriever.countAllAssignedTasksInPeriod(user.getId(), past, now);
+
+        double avgInprogressDate = Math.round(((double) avgInprogressTasks / ChronoUnit.DAYS.between(past, now)) * 10) / 10.0;
+        double avgDeferredRate = 0;
+        if (assignedTasks != 0) { // 할당된 작업이 있는 경우에만 계산
+            avgDeferredRate = Math.round(((double) avgDeferredTasks / assignedTasks) * 1000) / 10.0;
+        }
+        return TaskDashboardDto.builder()
+                .completeTasks(completeTasks)
+                .avgInprogressTasks(avgInprogressDate)
+                .avgDeferredRate(avgDeferredRate)
+                .build();
     }
 }
