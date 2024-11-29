@@ -97,4 +97,14 @@ public class TaskController {
     ){
         return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
     }
+
+    @GetMapping("/tasks/period")
+    public ResponseEntity<TaskDashboardDto> getDashBoard(
+            @UserId final Long userId,
+            @RequestParam(required = false) final LocalDate startDate,
+            @RequestParam(required = false) final LocalDate endDate,
+            @RequestParam(required = false) final Boolean isMonth
+    ){
+        return ResponseEntity.ok(taskService.getDashboard(userId, startDate, endDate, isMonth));
+    }
 }
