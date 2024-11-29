@@ -26,6 +26,17 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    // task 상태 수정 PATCH API
+    @PatchMapping("/tasks/{taskId}/status")
+    public ResponseEntity<Void> updateStatus(
+            @UserId final Long userId,
+            @PathVariable final Long taskId,
+            @RequestBody final TaskStatusDto taskStatusDto
+    ) {
+        taskService.updateStatus(userId, taskId, taskStatusDto);
+        return ResponseEntity.noContent().build();
+    }
+
     // Staging Area 에 새로운 Task 생성하는 POST API
     @PostMapping("/tasks")
     public ResponseEntity<Void> createTask(
@@ -42,17 +53,6 @@ public class TaskController {
             @PathVariable(name="taskId") final Long taskId
     ){
         taskService.removeTask(userId, taskId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // task 상태 수정 PATCH API
-    @PatchMapping("/tasks/{taskId}/status")
-    public ResponseEntity<Void> updateStatus(
-            @UserId final Long userId,
-            @PathVariable final Long taskId,
-            @RequestBody final TaskStatusDto taskStatusDto
-    ) {
-        taskService.updateStatus(userId, taskId, taskStatusDto);
         return ResponseEntity.noContent().build();
     }
 
@@ -78,16 +78,6 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasks(userId, isTotal, order, targetDate));
     }
 
-
-    // Task type별 리스트 조회
-    @GetMapping("/tasks/today")
-    public ResponseEntity<TodoTaskDto> getTodayTasks(
-            @UserId final Long userId,
-            @RequestParam String type
-    ){
-        return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
-    }
-
     // Task 설명 수정 PATCH API
     @PatchMapping("/tasks/{taskId}")
     public ResponseEntity<Void> updateTask(
@@ -99,16 +89,12 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // 대시보드
-    @GetMapping("/tasks/period")
-    public ResponseEntity<TaskDashboardDto> getDashBoard(
+    // Task type별 리스트 조회
+    @GetMapping("/tasks/today")
+    public ResponseEntity<TodoTaskDto> getTodayTasks(
             @UserId final Long userId,
-            @RequestParam(required = false) final LocalDate startDate,
-            @RequestParam(required = false) final LocalDate endDate,
-            @RequestParam(required = false) final Boolean isMonth
+            @RequestParam String type
     ){
-        return ResponseEntity.ok(taskService.getDashboard(userId, startDate, endDate, isMonth));
+        return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
     }
-
-
 }

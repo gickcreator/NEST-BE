@@ -288,7 +288,6 @@ public class TaskService {
                 ).build();
     }
 
-
     // Task 설명 수정 PATCH API
     @Transactional
     public void updateTask(final Long userId, final Long taskId, TaskUpdateDto taskUpdateDto) {
