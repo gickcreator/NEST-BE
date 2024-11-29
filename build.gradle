@@ -68,7 +68,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	// Discord-appender
-	implementation('com.github.napstr:logback-discord-appender:1.0.0')
+	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
 }
 
 ext {
