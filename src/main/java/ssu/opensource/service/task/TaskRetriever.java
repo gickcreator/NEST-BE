@@ -8,6 +8,7 @@ import ssu.opensource.exception.NotFoundException;
 import ssu.opensource.exception.code.NotFoundErrorCode;
 import ssu.opensource.repository.TaskRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,5 +56,7 @@ public class TaskRetriever {
         return taskRepository.findAllDeferredTasksByUserWithStatus(userId);
     }
 
-
+    public Integer countAllAssignedTasksInPeriod(final Long userId, final LocalDate startDate, final LocalDate endDate){
+        return taskRepository.countAllAssignedTasksInPeriod(userId, startDate, endDate);
+    }
 }
