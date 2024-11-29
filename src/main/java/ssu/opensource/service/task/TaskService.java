@@ -12,6 +12,7 @@ import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
+import ssu.opensource.dto.task.response.TasksDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.dto.type.Status;
 import ssu.opensource.exception.BusinessException;
@@ -202,7 +203,57 @@ public class TaskService {
         }
     }
 
-    // Task type별 리스트 조회 (데드라인 수정 완료)
+    // Task 리스트 조회
+    public TasksDto getTasks(
+            final Long userId,
+            final Boolean isTotal,
+            final String order,
+            final LocalDate targetDate
+    ) {
+        User user = userRetriever.findByUserId(userId);
+        List<TasksDto.TaskDto> taskItems;
+        if (targetDate != null) {
+            List<TaskStatus> taskStatuses = new ArrayList<>();
+            taskStatuses.addAll(taskStatusRetriever.findAllByTargetDateAndStatusDesc(user, targetDate, Status.IN_PROGRESS));
+            taskStatuses.addAll(taskStatusRetriever.findAllByTargetDateAndStatusDesc(user, targetDate, Status.TODO));
+            taskStatuses.addAll(taskStatusRetriever.findAllByTargetDateAndStatusDesc(user, targetDate, Status.DONE));
+
+            taskItems = taskStatuses
+                    .stream().map(
+                            taskStatus -> TasksDto.TaskDto.builder()
+                                    .id(taskStatus.getTask().getId())
+                                    .name(taskStatus.getTask().getName())
+                                    .hasDescription(taskStatus.getTask().getDescription() != null)
+                                    .status(taskStatus.getStatus().getContent())
+                                    .deadLine(new TaskCreateDto.DeadLine(taskStatus.getTask().getDeadLineDate(), taskStatus.getTask().getDeadLineTime()))
+                                    .build()
+                    ).toList();
+        } else {
+            List<Task> tasks = order == null ? taskRetriever.findAllByUserAndAssignedDateIsNullOrderByCreatedAtDesc(user)
+                    :
+                    switch (order) {
+                        case "recent" -> taskRetriever.findAllByUserAndAssignedDateIsNullOrderByCreatedAtDesc(user);
+                        case "old" -> taskRetriever.findAllByUserAndAssignedDateIsNullOrderByCreatedAtAsc(user);
+                        case "near" -> taskRetriever.findAllByUserAndAssignedDateIsNullOrderByTimeDiffAsc(user);
+                        case "far" -> taskRetriever.findAllByUserAndAssignedDateIsNullOrderByTimeDiffDesc(user);
+                        default -> throw new IllegalArgumentException(IllegalArgumentErrorCode.INVALID_ARGUMENTS);
+
+                    };
+            tasks = isTotal ? tasks : tasks.stream().filter(task -> task.getStatus().equals(Status.DEFERRED)).toList();
+            taskItems = tasks.stream().map(
+                    task -> TasksDto.TaskDto.builder()
+                            .id(task.getId())
+                            .name(task.getName())
+                            .hasDescription(task.getDescription() != null)
+                            .status(task.getStatus().getContent())
+                            .deadLine(new TaskCreateDto.DeadLine(task.getDeadLineDate(), task.getDeadLineTime()))
+                            .build()
+            ).toList();
+        }
+        return TasksDto.builder().tasks(taskItems).build();
+    }
+
+    // Task type별 리스트 조회
     public TodoTaskDto getTodayTasks(final Long userId, final String type){
         User user = userRetriever.findByUserId(userId);
         List<Task> tasks;
