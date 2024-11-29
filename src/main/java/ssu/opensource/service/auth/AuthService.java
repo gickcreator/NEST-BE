@@ -47,9 +47,7 @@ public class AuthService {
     @Transactional
     public JwtTokensDto reissueToken(final Long userId){
         JwtTokensDto tokensDto = jwtUtil.generateTokens(userId);
-
-        String userKey = userId.toString() + ":" + tokensDto.refreshToken();
-        tokenSaver.save(Token.builder().id(userKey).refreshToken(tokensDto.refreshToken()).build());
+        tokenSaver.save(Token.builder().id(userId).refreshToken(tokensDto.refreshToken()).build());
         return tokensDto;
     }
 
@@ -74,9 +72,7 @@ public class AuthService {
             userUpdater.updateName(user, googleUserInfoResponse.givenName(), googleUserInfoResponse.familyName());
         }
         JwtTokensDto jwtTokensDto = jwtUtil.generateTokens(user.getId());
-
-        String userKey = user.getId() + ":" + jwtTokensDto.refreshToken();
-        tokenSaver.save(Token.builder().id(userKey).refreshToken(jwtTokensDto.refreshToken()).build());
+        tokenSaver.save(Token.builder().id(user.getId()).refreshToken(jwtTokensDto.refreshToken()).build());
         return jwtTokensDto;
     }
 }
