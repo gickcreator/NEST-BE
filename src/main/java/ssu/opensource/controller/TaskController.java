@@ -1,5 +1,6 @@
 package ssu.opensource.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.request.TaskUpdateDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
+import ssu.opensource.dto.task.response.TasksDto;
 import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.service.task.TaskService;
 
@@ -63,6 +65,18 @@ public class TaskController {
         TargetDateDto targetDateDto = (targetDate != null) ? new TargetDateDto(targetDate) : null;
         return ResponseEntity.ok(taskService.getTaskDetails(userId, taskId, targetDateDto));
     }
+
+    // Task 리스트 조회
+    @GetMapping("/tasks")
+    public ResponseEntity<TasksDto> getTasks(
+            @UserId final Long userId,
+            @RequestParam(required = false) final Boolean isTotal,
+            @RequestParam(required = false) final String order,
+            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") final LocalDate targetDate
+    ){
+        return ResponseEntity.ok(taskService.getTasks(userId, isTotal, order, targetDate));
+    }
+
 
     // Task type별 리스트 조회
     @GetMapping("/tasks/today")
