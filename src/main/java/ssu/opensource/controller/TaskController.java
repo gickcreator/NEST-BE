@@ -9,6 +9,7 @@ import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
+import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.service.task.TaskService;
 
 import java.net.URI;
@@ -61,4 +62,15 @@ public class TaskController {
         TargetDateDto targetDateDto = (targetDate != null) ? new TargetDateDto(targetDate) : null;
         return ResponseEntity.ok(taskService.getTaskDetails(userId, taskId, targetDateDto));
     }
+
+    // Task type별 리스트 조회
+    @GetMapping("/tasks/today")
+    public ResponseEntity<TodoTaskDto> getTodayTasks(
+            @UserId final Long userId,
+            @RequestParam String type
+    ){
+        return ResponseEntity.ok(taskService.getTodayTasks(userId, type));
+    }
+
+
 }

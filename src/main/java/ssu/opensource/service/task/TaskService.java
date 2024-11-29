@@ -12,6 +12,7 @@ import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
 import ssu.opensource.dto.task.response.TaskDetailDto;
+import ssu.opensource.dto.task.response.TodoTaskDto;
 import ssu.opensource.dto.type.Status;
 import ssu.opensource.exception.BusinessException;
 import ssu.opensource.exception.IllegalArgumentException;
@@ -199,5 +200,37 @@ public class TaskService {
                     .timeBlock(timeBlock)
                     .build();
         }
+    }
+
+    // Task type별 리스트 조회 (데드라인 수정 완료)
+    public TodoTaskDto getTodayTasks(final Long userId, final String type){
+        User user = userRetriever.findByUserId(userId);
+        List<Task> tasks;
+
+        switch (type) {
+            case "upcoming" -> tasks = taskRetriever.findAllUpcomingTasksByUserWitAssignedStatus(userId);
+            case "inprogress" -> {
+                return TodoTaskDto.builder().tasks(taskStatusRetriever.findAllByTargetDateAndStatusDesc(user, LocalDate.now(), Status.IN_PROGRESS)
+                        .stream().map(
+                                taskStatus -> TodoTaskDto.TaskComponentDto.builder()
+                                        .id(taskStatus.getTask().getId())
+                                        .name(taskStatus.getTask().getName())
+                                        .deadLine(new TaskCreateDto.DeadLine(taskStatus.getTask().getDeadLineDate(), taskStatus.getTask().getDeadLineTime()))
+                                        .build()
+                        ).toList()
+                ).build();
+            }
+            case "deferred" -> tasks = taskRetriever.findAllDeferredTasksByUserWithStatus(userId);
+            default -> throw new IllegalArgumentException(IllegalArgumentErrorCode.INVALID_ARGUMENTS);
+        }
+        return TodoTaskDto.builder()
+                .tasks(
+                        tasks.stream().map( task -> TodoTaskDto.TaskComponentDto.builder()
+                                .id(task.getId())
+                                .name(task.getName())
+                                .deadLine(new TaskCreateDto.DeadLine(task.getDeadLineDate(), task.getDeadLineTime()))
+                                .build()
+                        ).toList()
+                ).build();
     }
 }
