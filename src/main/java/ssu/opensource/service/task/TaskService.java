@@ -8,8 +8,10 @@ import ssu.opensource.domain.Task;
 import ssu.opensource.domain.TaskStatus;
 import ssu.opensource.domain.TimeBlock;
 import ssu.opensource.domain.User;
+import ssu.opensource.dto.task.request.TargetDateDto;
 import ssu.opensource.dto.task.request.TaskCreateDto;
 import ssu.opensource.dto.task.request.TaskStatusDto;
+import ssu.opensource.dto.task.response.TaskDetailDto;
 import ssu.opensource.dto.type.Status;
 import ssu.opensource.exception.BusinessException;
 import ssu.opensource.exception.IllegalArgumentException;
@@ -167,4 +169,35 @@ public class TaskService {
         }
     }
 
+    // Task 상세 조회 GET API
+    public TaskDetailDto getTaskDetails(final Long userId, final Long taskId, final TargetDateDto targetDateDto) {
+        User user = userRetriever.findByUserId(userId);
+        Task task = taskRetriever.findByUserAndId(user, taskId);
+        TimeBlock tb = targetDateDto == null ? null : timeBlockRetriever.findByTaskIdAndTargetDate(task, targetDateDto.targetDate()); // timeblock 찾아옴
+        TaskDetailDto.TimeBlock timeBlock = (tb == null) ? null
+                : TaskDetailDto.TimeBlock.builder().id(tb.getId()).startTime(tb.getStartTime()).endTime(tb.getEndTime()).build();
+
+        TaskCreateDto.DeadLine deadLine = new TaskCreateDto.DeadLine(
+                task.getDeadLineDate(),
+                task.getDeadLineTime()
+        );
+
+        if (targetDateDto == null) {
+            return TaskDetailDto.builder()
+                    .name(task.getName())
+                    .description(task.getDescription())
+                    .status(task.getStatus().getContent())
+                    .deadLine(deadLine)
+                    .timeBlock(null)
+                    .build();
+        } else {
+            return TaskDetailDto.builder()
+                    .name(task.getName())
+                    .description(task.getDescription())
+                    .status(taskStatusRetriever.findByTaskAndTargetDate(task, targetDateDto.targetDate()).getStatus().getContent())
+                    .deadLine(deadLine)
+                    .timeBlock(timeBlock)
+                    .build();
+        }
+    }
 }
