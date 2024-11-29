@@ -14,5 +14,5 @@ public class GoogleConstant {
     public static final String AUTHORIZATION_CODE = "authorization_code";
     public static final String CODE = "code";
     public static final String TOKEN = "token";
-    public static final String APPLICATION_NAME = "nutshell";
+    public static final String APPLICATION_NAME = "nest";
 }
