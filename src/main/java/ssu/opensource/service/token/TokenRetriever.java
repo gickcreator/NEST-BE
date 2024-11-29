@@ -13,10 +13,8 @@ import ssu.opensource.repository.TokenRepository;
 public class TokenRetriever {
     private final TokenRepository tokenRepository;
 
-    public Token findById(final Long userId, final String refreshToken){
-
-        String userKey = userId.toString() + ":" + refreshToken;
-        return tokenRepository.findById(userKey).orElseThrow(
+    public Token findById(final Long userId){
+        return tokenRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(NotFoundErrorCode.NOT_FOUND_REFRESH_TOKEN)
         );
     }
